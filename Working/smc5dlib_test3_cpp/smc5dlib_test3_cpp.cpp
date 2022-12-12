@@ -29,7 +29,7 @@ int main(array<System::String ^> ^args)
 
     while (myConnector->Status != SMCStatus::Ready && timeout > 0)
     {
-        _sleep(50);
+        Sleep(50);
         timeout -= 50;
         printf(".");
     }
@@ -38,6 +38,11 @@ int main(array<System::String ^> ^args)
         printf("\nTimeout with error %d.\n", myConnector->Status);
         return false;
     }
+
+    // New
+    myManualMove->Step(MoveAxis::X, true, 10);
+    Sleep(1000);
+    myManualMove->Stop();
 
     printf("\nOK!!\n");
 

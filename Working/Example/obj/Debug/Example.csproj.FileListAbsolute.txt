@@ -1,0 +1,13 @@
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\bin\Debug\Example.exe
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\bin\Debug\Example.pdb
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\obj\Debug\Example.csprojResolveAssemblyReference.cache
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\obj\Debug\Example.Properties.Resources.resources
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\obj\Debug\Example.csproj.GenerateResource.Cache
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\obj\Debug\Example.exe
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\obj\Debug\Example.pdb
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\bin\Debug\smc5d.core.dll
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\bin\Debug\smc5d.core.xml
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\obj\Debug\Example.Form1.resources
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\bin\Debug\WinUSBNet.dll
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\bin\Debug\smc5d.core.pdb
+D:\Develop\cnc\cncGraF\5.x.p32x64\Pic32Test\smc5d.core.example\Example\bin\Debug\WinUSBNet.xml
