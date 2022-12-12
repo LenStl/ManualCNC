@@ -1,0 +1,8 @@
+C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test3_cpp\x64\Debug\smc5dlib_test3_cpp.vcxproj.AssemblyReference.cache
+C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test3_cpp\x64\Debug\smc5dlib_test3_cpp.vcxproj.SuggestedBindingRedirects.cache
+C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test3_cpp\x64\Debug\smc5dlib_test3_cpp.vcxproj.CopyComplete
+C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test3_cpp\x64\Debug\smc5dlib_test3_cpp.exe
+C:\Users\CNC\proj\ManualCNC\Working\smc5dlib_test3_cpp\x64\Debug\smc5dlib_test3_cpp.vcxproj.AssemblyReference.cache
+C:\Users\CNC\proj\ManualCNC\Working\smc5dlib_test3_cpp\x64\Debug\smc5dlib_test3_cpp.vcxproj.SuggestedBindingRedirects.cache
+C:\Users\CNC\proj\ManualCNC\Working\smc5dlib_test3_cpp\x64\Debug\smc5dlib_test3_cpp.vcxproj.CopyComplete
+C:\Users\CNC\proj\ManualCNC\Working\smc5dlib_test3_cpp\x64\Debug\smc5dlib_test3_cpp.exe

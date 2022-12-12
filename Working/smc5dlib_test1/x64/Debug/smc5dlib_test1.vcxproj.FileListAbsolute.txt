@@ -1,0 +1,8 @@
+C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test1\x64\Debug\smc5dlib_test1.vcxproj.AssemblyReference.cache
+C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test1\x64\Debug\smc5dlib_test1.vcxproj.CopyComplete
+C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test1\x64\Debug\Ijwhost.dll
+C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test1\x64\Debug\smc5dlib_test1.dll
+C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test1\x64\Debug\smc5dlib_test1.deps.json
+C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test1\x64\Debug\smc5dlib_test1.genruntimeconfig.cache
+C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test1\x64\Debug\smc5dlib_test1.runtimeconfig.json
+C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test1\x64\Debug\smc5d.core.dll

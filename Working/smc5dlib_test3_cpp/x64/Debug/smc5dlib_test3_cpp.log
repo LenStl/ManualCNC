@@ -1,0 +1,8 @@
+﻿  pch.cpp
+  AssemblyInfo.cpp
+  smc5dlib_test3_cpp.cpp
+C:\Users\CNC\proj\ManualCNC\Working\smc5dlib_test3_cpp\smc5dlib_test3_cpp.cpp(32,9): warning C4996: '_sleep': This function or variable has been superceded by newer library or operating system functionality. Consider using Sleep instead. See online help for details.
+  Generating Code...
+  .NETFramework,Version=v4.7.2.AssemblyAttributes.cpp
+  AssemblyInfo.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
+  smc5dlib_test3_cpp.vcxproj -> C:\Users\CNC\proj\ManualCNC\Working\smc5dlib_test1\x64\Debug\smc5dlib_test3_cpp.exe

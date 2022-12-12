@@ -1,0 +1,246 @@
+ImageRuntimeVersion: v2.0.50727
+Assembly WinUSBNet, Version=2.0.*, Culture=Invariant Language (Invariant Country): 
+	hash=SHA1, flags=PublicKey
+Assembly mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Class MadWizard.WinUSBNet.USBDeviceDescriptor: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  Properties:
+    System.String PathName 'get set' : 
+    Int32 VID  'get set' : 
+    Int32 PID  'get set' : 
+    System.String Manufacturer 'get set' : 
+    System.String Product 'get set' : 
+    System.String SerialNumber 'get set' : 
+    System.String FullName 'get ' : 
+    Byte ClassValue 'get set' : 
+    Byte SubClass 'get set' : 
+    Byte Protocol 'get set' : 
+    MadWizard.WinUSBNet.USBBaseClass BaseClass 'get set' : 
+  Methods:
+    get_PathName(): PrivateScope, Public, HideBySig, SpecialName
+    get_VID(): PrivateScope, Public, HideBySig, SpecialName
+    get_PID(): PrivateScope, Public, HideBySig, SpecialName
+    get_Manufacturer(): PrivateScope, Public, HideBySig, SpecialName
+    get_Product(): PrivateScope, Public, HideBySig, SpecialName
+    get_SerialNumber(): PrivateScope, Public, HideBySig, SpecialName
+    get_FullName(): PrivateScope, Public, HideBySig, SpecialName
+    get_ClassValue(): PrivateScope, Public, HideBySig, SpecialName
+    get_SubClass(): PrivateScope, Public, HideBySig, SpecialName
+    get_Protocol(): PrivateScope, Public, HideBySig, SpecialName
+    get_BaseClass(): PrivateScope, Public, HideBySig, SpecialName
+Struct MadWizard.WinUSBNet.USBBaseClass: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    MadWizard.WinUSBNet.USBBaseClass Unknown = -1 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass None = 0 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass Audio = 1 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass CommCDC = 2 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass HID = 3 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass Physical = 5 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass Image = 6 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass Printer = 7 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass MassStorage = 8 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass Hub = 9 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass CDCData = 10 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass SmartCard = 11 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass ContentSecurity = 13 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass Video = 14 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass PersonalHealthcare = 15 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass DiagnosticDevice = 220 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass WirelessController = 224 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass Miscellaneous = 239 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass ApplicationSpecific = 254 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBBaseClass VendorSpecific = 255 : Public, Static, Literal, HasDefault
+Class MadWizard.WinUSBNet.USBDevice: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(MadWizard.WinUSBNet.USBDeviceInfo): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    MadWizard.WinUSBNet.USBPipeCollection Pipes 'get set' : 
+    MadWizard.WinUSBNet.USBInterfaceCollection Interfaces 'get set' : 
+    MadWizard.WinUSBNet.USBDeviceDescriptor Descriptor 'get set' : 
+    Int32 ControlPipeTimeout 'get set' : 
+  Methods:
+    get_Pipes(): PrivateScope, Public, HideBySig, SpecialName
+    get_Interfaces(): PrivateScope, Public, HideBySig, SpecialName
+    get_Descriptor(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    get_ControlPipeTimeout(): PrivateScope, Public, HideBySig, SpecialName
+    set_ControlPipeTimeout(Int32): PrivateScope, Public, HideBySig, SpecialName
+    ControlTransfer(Byte, Byte, Int32, Int32, Byte[], Int32): PrivateScope, Public, HideBySig
+    BeginControlTransfer(Byte, Byte, Int32, Int32, Byte[], Int32, AsyncCallback, Object): PrivateScope, Public, HideBySig
+    BeginControlTransfer(Byte, Byte, Int32, Int32, Byte[], AsyncCallback, Object): PrivateScope, Public, HideBySig
+    EndControlTransfer(IAsyncResult): PrivateScope, Public, HideBySig
+    ControlTransfer(Byte, Byte, Int32, Int32, Byte[]): PrivateScope, Public, HideBySig
+    ControlTransfer(Byte, Byte, Int32, Int32): PrivateScope, Public, HideBySig
+    ControlIn(Byte, Byte, Int32, Int32, Int32): PrivateScope, Public, HideBySig
+    ControlIn(Byte, Byte, Int32, Int32, Byte[], Int32): PrivateScope, Public, HideBySig
+    ControlIn(Byte, Byte, Int32, Int32, Byte[]): PrivateScope, Public, HideBySig
+    ControlIn(Byte, Byte, Int32, Int32): PrivateScope, Public, HideBySig
+    ControlOut(Byte, Byte, Int32, Int32, Byte[], Int32): PrivateScope, Public, HideBySig
+    ControlOut(Byte, Byte, Int32, Int32, Byte[]): PrivateScope, Public, HideBySig
+    ControlOut(Byte, Byte, Int32, Int32): PrivateScope, Public, HideBySig
+    BeginControlTransfer(Byte, Byte, Int32, Int32, AsyncCallback, Object): PrivateScope, Public, HideBySig
+    BeginControlIn(Byte, Byte, Int32, Int32, Byte[], Int32, AsyncCallback, Object): PrivateScope, Public, HideBySig
+    BeginControlIn(Byte, Byte, Int32, Int32, Byte[], AsyncCallback, Object): PrivateScope, Public, HideBySig
+    BeginControlIn(Byte, Byte, Int32, Int32, AsyncCallback, Object): PrivateScope, Public, HideBySig
+    BeginControlOut(Byte, Byte, Int32, Int32, Byte[], Int32, AsyncCallback, Object): PrivateScope, Public, HideBySig
+    BeginControlOut(Byte, Byte, Int32, Int32, Byte[], AsyncCallback, Object): PrivateScope, Public, HideBySig
+    BeginControlOut(Byte, Byte, Int32, Int32, AsyncCallback, Object): PrivateScope, Public, HideBySig
+    GetDevices(String): PrivateScope, Public, Static, HideBySig
+    GetDevices(Guid): PrivateScope, Public, Static, HideBySig
+    GetSingleDevice(Guid): PrivateScope, Public, Static, HideBySig
+    GetSingleDevice(String): PrivateScope, Public, Static, HideBySig
+Class MadWizard.WinUSBNet.USBDeviceInfo: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  Properties:
+    Int32 VID  'get ' : 
+    Int32 PID  'get ' : 
+    System.String Manufacturer 'get ' : 
+    System.String DeviceDescription 'get ' : 
+    System.String DevicePath 'get ' : 
+  Methods:
+    get_VID(): PrivateScope, Public, HideBySig, SpecialName
+    get_PID(): PrivateScope, Public, HideBySig, SpecialName
+    get_Manufacturer(): PrivateScope, Public, HideBySig, SpecialName
+    get_DeviceDescription(): PrivateScope, Public, HideBySig, SpecialName
+    get_DevicePath(): PrivateScope, Public, HideBySig, SpecialName
+Class MadWizard.WinUSBNet.USBException: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.Exception
+    Void .ctor(System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.String, System.Exception): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class MadWizard.WinUSBNet.USBInterface: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  Properties:
+    MadWizard.WinUSBNet.USBPipeCollection Pipes 'get set' : 
+    Int32 Number 'get set' : 
+    MadWizard.WinUSBNet.USBDevice Device 'get set' : 
+    MadWizard.WinUSBNet.USBPipe InPipe 'get set' : 
+    MadWizard.WinUSBNet.USBPipe OutPipe 'get set' : 
+    MadWizard.WinUSBNet.USBBaseClass BaseClass 'get set' : 
+    Byte ClassValue 'get set' : 
+    Byte SubClass 'get set' : 
+    Byte Protocol 'get set' : 
+  Methods:
+    get_Pipes(): PrivateScope, Public, HideBySig, SpecialName
+    get_Number(): PrivateScope, Public, HideBySig, SpecialName
+    get_Device(): PrivateScope, Public, HideBySig, SpecialName
+    get_InPipe(): PrivateScope, Public, HideBySig, SpecialName
+    get_OutPipe(): PrivateScope, Public, HideBySig, SpecialName
+    get_BaseClass(): PrivateScope, Public, HideBySig, SpecialName
+    get_ClassValue(): PrivateScope, Public, HideBySig, SpecialName
+    get_SubClass(): PrivateScope, Public, HideBySig, SpecialName
+    get_Protocol(): PrivateScope, Public, HideBySig, SpecialName
+Class MadWizard.WinUSBNet.USBInterfaceCollection: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  Interfaces:
+    System.Collections.Generic.IEnumerable`1[MadWizard.WinUSBNet.USBInterface]
+    System.Collections.IEnumerable
+  Properties:
+    MadWizard.WinUSBNet.USBInterface Item [Int32] 'get ' : 
+  Methods:
+    Find(USBBaseClass): PrivateScope, Public, HideBySig
+    FindAll(USBBaseClass): PrivateScope, Public, HideBySig
+    GetEnumerator(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    get_Item(Int32): PrivateScope, Public, HideBySig, SpecialName
+Class MadWizard.WinUSBNet.USBEventHandler: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.MulticastDelegate
+    Void .ctor(System.Object, IntPtr): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Methods:
+    Invoke(Object, USBEvent): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    BeginInvoke(Object, USBEvent, AsyncCallback, Object): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+    EndInvoke(IAsyncResult): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask
+Struct MadWizard.WinUSBNet.USBEventType: AutoLayout, AnsiClass, Class, Public, Sealed
+  :System.Enum
+  Fields:
+    Int32 value__ : Public, SpecialName, RTSpecialName
+    MadWizard.WinUSBNet.USBEventType DeviceArrival = 0 : Public, Static, Literal, HasDefault
+    MadWizard.WinUSBNet.USBEventType DeviceRemoval = 1 : Public, Static, Literal, HasDefault
+Class MadWizard.WinUSBNet.USBEvent: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  :System.EventArgs
+  Fields:
+    System.Guid Guid : Public
+    System.String DevicePath : Public
+    MadWizard.WinUSBNet.USBEventType Type : Public
+Class MadWizard.WinUSBNet.USBNotifier: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(System.Windows.Forms.Control, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(System.Windows.Forms.Control, System.Guid): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(IntPtr, System.Guid): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(IntPtr, System.String): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Properties:
+    System.Guid Guid 'get ' : 
+  Events:
+    MadWizard.WinUSBNet.USBEventHandler Arrival: 
+    MadWizard.WinUSBNet.USBEventHandler Removal: 
+  Methods:
+    add_Arrival(USBEventHandler): PrivateScope, Public, HideBySig, SpecialName
+    remove_Arrival(USBEventHandler): PrivateScope, Public, HideBySig, SpecialName
+    add_Removal(USBEventHandler): PrivateScope, Public, HideBySig, SpecialName
+    remove_Removal(USBEventHandler): PrivateScope, Public, HideBySig, SpecialName
+    get_Guid(): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+Class MadWizard.WinUSBNet.USBPipe: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  Properties:
+    Byte Address 'get ' : 
+    MadWizard.WinUSBNet.USBDevice Device 'get ' : 
+    Int32 MaximumPacketSize 'get ' : 
+    MadWizard.WinUSBNet.USBInterface Interface 'get ' : 
+    MadWizard.WinUSBNet.USBPipePolicy Policy 'get ' : 
+    Boolean IsOut 'get ' : 
+    Boolean IsIn 'get ' : 
+  Methods:
+    get_Address(): PrivateScope, Public, HideBySig, SpecialName
+    get_Device(): PrivateScope, Public, HideBySig, SpecialName
+    get_MaximumPacketSize(): PrivateScope, Public, HideBySig, SpecialName
+    get_Interface(): PrivateScope, Public, HideBySig, SpecialName
+    get_Policy(): PrivateScope, Public, HideBySig, SpecialName
+    get_IsOut(): PrivateScope, Public, HideBySig, SpecialName
+    get_IsIn(): PrivateScope, Public, HideBySig, SpecialName
+    Read(Byte[]): PrivateScope, Public, HideBySig
+    Read(Byte[], Int32, Int32): PrivateScope, Public, HideBySig
+    BeginRead(Byte[], Int32, Int32, AsyncCallback, Object): PrivateScope, Public, HideBySig
+    EndRead(IAsyncResult): PrivateScope, Public, HideBySig
+    Write(Byte[]): PrivateScope, Public, HideBySig
+    Write(Byte[], Int32, Int32): PrivateScope, Public, HideBySig
+    BeginWrite(Byte[], Int32, Int32, AsyncCallback, Object): PrivateScope, Public, HideBySig
+    EndWrite(IAsyncResult): PrivateScope, Public, HideBySig
+    Abort(): PrivateScope, Public, HideBySig
+    Flush(): PrivateScope, Public, HideBySig
+Class MadWizard.WinUSBNet.USBPipeCollection: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  Interfaces:
+    System.Collections.Generic.IEnumerable`1[MadWizard.WinUSBNet.USBPipe]
+    System.Collections.IEnumerable
+  Properties:
+    MadWizard.WinUSBNet.USBPipe Item [Byte] 'get ' : 
+  Methods:
+    get_Item(Byte): PrivateScope, Public, HideBySig, SpecialName
+    GetEnumerator(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+Class MadWizard.WinUSBNet.USBPipePolicy: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+  Properties:
+    Boolean AllowPartialReads 'get set' : 
+    Boolean AutoClearStall 'get set' : 
+    Boolean AutoFlush 'get set' : 
+    Boolean IgnoreShortPackets 'get set' : 
+    Int32 PipeTransferTimeout 'get set' : 
+    Boolean RawIO 'get set' : 
+    Boolean ShortPacketTerminate 'get set' : 
+  Methods:
+    get_AllowPartialReads(): PrivateScope, Public, HideBySig, SpecialName
+    set_AllowPartialReads(Boolean): PrivateScope, Public, HideBySig, SpecialName
+    get_AutoClearStall(): PrivateScope, Public, HideBySig, SpecialName
+    set_AutoClearStall(Boolean): PrivateScope, Public, HideBySig, SpecialName
+    get_AutoFlush(): PrivateScope, Public, HideBySig, SpecialName
+    set_AutoFlush(Boolean): PrivateScope, Public, HideBySig, SpecialName
+    get_IgnoreShortPackets(): PrivateScope, Public, HideBySig, SpecialName
+    set_IgnoreShortPackets(Boolean): PrivateScope, Public, HideBySig, SpecialName
+    get_PipeTransferTimeout(): PrivateScope, Public, HideBySig, SpecialName
+    set_PipeTransferTimeout(Int32): PrivateScope, Public, HideBySig, SpecialName
+    get_RawIO(): PrivateScope, Public, HideBySig, SpecialName
+    set_RawIO(Boolean): PrivateScope, Public, HideBySig, SpecialName
+    get_ShortPacketTerminate(): PrivateScope, Public, HideBySig, SpecialName
+    set_ShortPacketTerminate(Boolean): PrivateScope, Public, HideBySig, SpecialName

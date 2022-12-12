@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "smc5dlib_test1/1.0.0": {
+        "dependencies": {
+          "smc5d.core": "1.0.0.0"
+        },
+        "runtime": {
+          "smc5dlib_test1.dll": {}
+        }
+      },
+      "smc5d.core/1.0.0.0": {
+        "runtime": {
+          "smc5d.core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "smc5dlib_test1/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "smc5d.core/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

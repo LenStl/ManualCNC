@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "UzCqOX8pU32WaPWnLpFmdDNL7FGaiHwecpO80pkrHN2YCGYRwfwpZw2IIJX08VJkY5rjbr7Hwfb36UVXQWHUhg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\CNC\\proj\\smc5dlib_test\\smc5dlib_test1\\smc5dlib_test1.vcxproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\CNC\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.20348.27\\microsoft.windows.sdk.net.ref.10.0.20348.27.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,5 @@
+﻿  main.cpp
+  .NETCoreApp,Version=v7.0.AssemblyAttributes.cpp
+  Generating Code...
+  main.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
+  smc5dlib_test1.vcxproj -> C:\Users\CNC\proj\smc5dlib_test\smc5dlib_test1\x64\Debug\smc5dlib_test1.dll
