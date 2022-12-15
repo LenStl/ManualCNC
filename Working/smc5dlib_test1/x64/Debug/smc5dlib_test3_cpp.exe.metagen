@@ -1,9 +1,9 @@
 ImageRuntimeVersion: v4.0.30319
-Assembly smc5dlib_test3_cpp, Version=1.0.*, Culture=Invariant Language (Invariant Country): 
+Assembly smc5dlib_test3_cpp, Version=1.0.*, Culture=Invariante Sprache (Invariantes Land): 
 	hash=SHA1, flags=PublicKey
 Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
 	hash=None, flags=None
-Assembly smc5d.core, Version=1.0.*, Culture=Invariant Language (Invariant Country): 
+Assembly smc5d.core, Version=1.0.*, Culture=Invariante Sprache (Invariantes Land): 
 	hash=None, flags=None
 Assembly System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
 	hash=None, flags=None
@@ -11,5 +11,5 @@ Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e0
 	hash=None, flags=None
 Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
 	hash=None, flags=None
-Assembly WinUSBNet, Version=2.0.*, Culture=Invariant Language (Invariant Country): 
+Assembly WinUSBNet, Version=2.0.*, Culture=Invariante Sprache (Invariantes Land): 
 	hash=None, flags=None

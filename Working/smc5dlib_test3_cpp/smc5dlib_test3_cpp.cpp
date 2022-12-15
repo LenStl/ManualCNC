@@ -5,6 +5,8 @@
 #include <array>
 
 using namespace System;
+using namespace System::Collections::Generic;
+using namespace De::Boenigk::SMC5D::Settings;
 using namespace De::Boenigk::SMC5D::Basics;
 using namespace De::Boenigk::SMC5D::Move;
 
@@ -40,12 +42,28 @@ int main(array<System::String ^> ^args)
     }
 
     // New
-    myManualMove->Step(MoveAxis::X, true, 10);
+    // Job: Draw square with 10mm/s. After 2.5 seconds stop and do a manual move for 1 second. Then continue.
+    SMCSettings ^smcSettings = gcnew SMCSettings();
+    StepList ^stepList = gcnew StepList(smcSettings);
+    stepList->AddXY( 0.0f,  0.0f, 10.0f);
+    stepList->AddXY(100.0f,  0.0f, 10.0f);
+    stepList->AddXY(100.0f, 100.0f, 10.0f);
+    stepList->AddXY( 0.0f, 100.0f, 10.0f);
+    stepList->AddXY( 0.0f, 00.0f, 10.0f);
+
+    Job^ job = gcnew Job(myConnector);
+    job->SetStepList(stepList->List);
+
+    job->Start(100);        // Start job with 100% speed
+    Sleep(2500);
+    job->Pause();
+    myManualMove->Step(MoveAxis::X, true, 10.0f);
     Sleep(1000);
     myManualMove->Stop();
+
+    job->Continue(100);
 
     printf("\nOK!!\n");
 
     return true;
-
 }
