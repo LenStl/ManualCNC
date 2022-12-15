@@ -1,3 +1,7 @@
-﻿  smc5dlib_test3_cpp.cpp
-  AssemblyInfo.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
-  smc5dlib_test3_cpp.vcxproj -> C:\Users\CNC\proj\ManualCNC\Working\smc5dlib_test1\x64\Debug\smc5dlib_test3_cpp.exe
+﻿  pch.cpp
+  AssemblyInfo.cpp
+  smc5dlib_test3_cpp.cpp
+  Code wird generiert...
+  .NETFramework,Version=v4.7.2.AssemblyAttributes.cpp
+  AssemblyInfo.obj : MSIL-Modulgefunden; inkrementelles Verknüpfen wird für MSIL deaktiviert; vollständiger Link wird durchgeführt
+  smc5dlib_test3_cpp.vcxproj -> C:\Projects\C++ Projects\ManualCNC\Working\smc5dlib_test1\x64\Debug\smc5dlib_test3_cpp.exe

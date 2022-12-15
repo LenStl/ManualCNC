@@ -53,8 +53,9 @@ int main(array<System::String ^> ^args)
     Sleep(5000);
     myManualMove->Stop();
 
+    job->Continue(100);
+
     printf("\nOK!!\n");
 
     return true;
-
 }
