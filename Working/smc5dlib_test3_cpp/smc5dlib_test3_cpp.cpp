@@ -39,9 +39,9 @@ int main(array<System::String ^> ^args)
         return false;
     }
 
-    // New
-    myManualMove->Step(MoveAxis::X, true, 10);
-    Sleep(1000);
+    // New;
+    myManualMove->Step(MoveAxis::Y, false, 10.0f);
+    Sleep(5000);
     myManualMove->Stop();
 
     printf("\nOK!!\n");

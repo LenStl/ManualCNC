@@ -51,5 +51,8 @@
     <Xml Include="config_Haase1290Expert.xml">
       <Filter>Resource Files</Filter>
     </Xml>
+    <Xml Include="config.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

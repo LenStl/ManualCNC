@@ -159,6 +159,7 @@
     <None Include="..\smc5dlib_test1\x64\Debug\WinUSBNet.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Xml Include="config.xml" />
     <Xml Include="config_Haase1290Expert.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
