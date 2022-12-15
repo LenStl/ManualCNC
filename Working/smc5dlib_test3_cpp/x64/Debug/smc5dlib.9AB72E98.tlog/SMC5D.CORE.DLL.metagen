@@ -1,6 +1,6 @@
   De.Boenigk.SMC5D.Dialogs.DlgPicTester.resources - Embedded, ContainedInManifestFile, 
 ImageRuntimeVersion: v4.0.30319
-Assembly smc5d.core, Version=1.0.*, Culture=Invariant Language (Invariant Country): 
+Assembly smc5d.core, Version=1.0.*, Culture=Invariante Sprache (Invariantes Land): 
 	hash=SHA1, flags=PublicKey
 Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
 	hash=None, flags=None
@@ -12,7 +12,7 @@ Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c5619
 	hash=None, flags=None
 Assembly System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
 	hash=None, flags=None
-Assembly WinUSBNet, Version=1.0.*, Culture=Invariant Language (Invariant Country): 
+Assembly WinUSBNet, Version=1.0.*, Culture=Invariante Sprache (Invariantes Land): 
 	hash=None, flags=None
 Class MicroLibrary.MicroStopwatch: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
   :System.Diagnostics.Stopwatch
