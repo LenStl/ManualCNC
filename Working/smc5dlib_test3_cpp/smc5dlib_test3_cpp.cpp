@@ -40,6 +40,11 @@ int main(array<System::String^>^ args)
     waitForReady(myReference);
     printf("[+] Done.\n");
 
+
+
+    StepCalc^ stepCalc = gcnew StepCalc();
+    Switch^ mySwitch = gcnew Switch(myConnector);
+
     /* Position roughly in the middle. */
     ManualMove^ myManualMove = gcnew ManualMove(myConnector);
     //printf("[!] Positioning for safe testing.\n");
@@ -50,19 +55,23 @@ int main(array<System::String^>^ args)
     //printf("[+] Done.\n");
 
     /* Setup Job. */
+
+
     StepList^ myJobStepList;
+
+    //StepReader^ stepReader = gcnew StepReader(".\\circle.dxf");
+    //if (stepReader == nullptr || !stepReader->IsOpened) return 1;
+    //stepReader->Open();
+    //myJobStepList->List = stepReader->ReadToEnd();
+    //stepReader->Close();
     //myJobStepList = generateCircleStepList(300.0f, 300.0f, 100.0f, 100.0f, 50.0f, 40, myConnector);
+    //myJobStepList = generateLineStepList(150.0f, 150.0f, 400.0f, 400.0f, 100.0f, 30.0f, myConnector);
     myJobStepList = generateSquareStepList(100.0f, 100.0f, 300.0f, 300.0f, 100.0f, 50.0f, myConnector);
     StepList^ currentJobStepList = gcnew StepList(myConnector->SMCSettings);
     for (int i = 0; i < myJobStepList->List->Count; i++)
         currentJobStepList->Add(myJobStepList->List[i]->GetCopy());
 
-    //myJobStepList = generateLineStepList(150.0f, 150.0f, 400.0f, 400.0f, 100.0f, 30.0f, myConnector);
-    
     waitForReady(myConnector);
-
-    StepCalc^ stepCalc = gcnew StepCalc();
-    Switch^ mySwitch = gcnew Switch(myConnector);
 
     printf("[!] Starting job.\n");
     Job^ myJob = gcnew Job(myConnector);
@@ -90,26 +99,31 @@ int main(array<System::String^>^ args)
                     //else myJob->Continue(255);
                     
                     /* Current: Abort job, do movement, calculate residual job and execute it.*/
-                    int lastIndex = myJob->GetPosition();
+                    int currentIndex = myJob->GetPosition();
                     myJob->Pause();
+                    //myJob->Abort();
 
-                    printf(" [!] Job interrupted.\n");
-                    //waitForReady(myConnector);
-                    //myManualMove->Step(MoveAxis::X, false, 30.0f);
-                    Sleep(2000);
-                    //myManualMove->Stop();
-                    //waitForReady(myConnector);
-                    printf(" [!] Continuing job...\n");
-
-                    myJob = gcnew Job(myConnector);
-                    
-                    // TODO
-                    currentJobStepList->List->RemoveRange(0, lastIndex);
-                    //currentJobStepList = getResidualStepList(currentJobStepList, lastIndex, myConnector);
-                    myJob->SetStepList(currentJobStepList->List);
+                    printf(" [!] Job interrupted at step %d.\n", currentIndex);
                     waitForReady(myConnector);
-                    
+                    myManualMove->Step(MoveAxis::X, true, 0.0f);    // Somehow resets the connector from "Abort" to "Ready".
+                    myManualMove->Stop();                           //
+                    Sleep(2000);
+                    myJob = gcnew Job(myConnector);
+                    StepList^ newJobStepList = gcnew StepList(myConnector->SMCSettings);
+                    // TODO
+                    if (currentIndex > 0) {
+                        //currentJobStepList->List->RemoveRange(0, currentIndex - 1);
+                        for (int i = 0; i < currentJobStepList->List->Count - currentIndex; i++)
+                        {
+                            newJobStepList->Add(currentJobStepList->List[i + currentIndex]->GetCopy());
+                        }
+                        currentJobStepList = newJobStepList;
+                    }
+                    myJob->SetStepList(newJobStepList->List);
+
+                    printf(" [!] Continuing job...\n");
                     myJob->Start(100);
+
                     wasPressed = false;
                 }
             }
