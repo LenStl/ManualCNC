@@ -33,7 +33,7 @@ int main(array<System::String^>^ args)
     if (!initConnector(myConnector, ".\\config_Haase1290Expert.xml")) return false;
     SpeedTact^ mySpeedTact = gcnew SpeedTact(myConnector);
     mySpeedTact->Tact(100);       // Job/ManualMove Speed: 100%
-    //speedTact->Tact(0);       // Job/ManualMove Speed:   0%
+    //mySpeedTact->Tact(0);       // Job/ManualMove Speed:   0%
 
     /* Do reference run. */
     printf("[!] Doing reference run.\n");
@@ -56,14 +56,18 @@ int main(array<System::String^>^ args)
     //printf("[+] Done.\n");
 
     /* Setup Job. */
-    StepList^ myJobStepList;
+    StepList^ myJobStepList = gcnew StepList(myConnector->SMCSettings);
 
-    //StepReader^ stepReader = gcnew StepReader(".\\circle.dxf");
-    //if (stepReader == nullptr || !stepReader->IsOpened) return 1;
+    // TODO: Read in files.
+    //StepReader^ stepReader = gcnew StepReader("..\\..\\..\\smc5dlib_test3_cpp\\circle.nc");
     //stepReader->Open();
-    //myJobStepList->List = stepReader->ReadToEnd();
+    //if (!stepReader->IsOpened) return 1;
+    //
     //stepReader->Close();
-    //myJobStepList = generateCircleStepList(300.0f, 300.0f, 100.0f, 100.0f, 50.0f, 40, myConnector);
+    //printf("Success!");
+    //return 0;
+
+    //myJobStepList = generateCircleStepList(300.0f, 300.0f, 100.0f, 100.0f, 30.0f, 100, myConnector); // Speed 30.0f smooth.
     //myJobStepList = generateLineStepList(150.0f, 150.0f, 400.0f, 400.0f, 100.0f, 30.0f, myConnector);
     myJobStepList = generateSquareStepList(100.0f, 100.0f, 300.0f, 300.0f, 100.0f, 50.0f, myConnector);
     StepList^ currentJobStepList = gcnew StepList(myConnector->SMCSettings);
@@ -79,6 +83,7 @@ int main(array<System::String^>^ args)
     {
         bool isStopped = false;
         bool wasPressed = false;
+
         while (myJob->Status != SMCStatus::Ready)
         {
             if (GetKeyState(VK_SPACE) & 0x8000)
@@ -95,34 +100,32 @@ int main(array<System::String^>^ args)
                     /* Pausing and continuing job .*/
                     //if (!isStopped) myJob->Pause();
                     //else myJob->Continue(255);
-                    
-                    // TODO: Try out Wait(-1), maybe in conjunction with Continue(100). Supposed to stop the machine.
 
-                    /* Current: Abort/Pause job, do movement, calculate residual job and execute it.*/
+
+                    /* Abort/Pause job, do movement, calculate residual job and execute it.*/
                     int currentIndex = myJob->GetPosition();
-                    myJob->Pause();
-                    //myJob->Abort();
+                    //myJob->Pause();                               // Slow stopping, while still following path.
+                    myJob->Abort();
                     printf(" [!] Job interrupted at step %d.\n", currentIndex);
                     waitForReady(myConnector);
                     myManualMove->Step(MoveAxis::X, true, 0.0f);    // Somehow resets the connector from "Abort" to "Ready".
                     myManualMove->Stop();                           //
                     Sleep(2000);
+                    //currentJobStepList->List->RemoveRange(0, currentIndex - 1);
                     myJob = gcnew Job(myConnector);
-                    StepList^ newJobStepList = gcnew StepList(myConnector->SMCSettings);
-                    // TODO
-                    if (currentIndex > 0) {
-                        //currentJobStepList->List->RemoveRange(0, currentIndex - 1);
+                    
+                    if (currentIndex > 0)
+                    {
+                        currentIndex--; // Slight Non-Linearity in the step indices: GetPosition() == 0: Initializing, moving to the first coordinate. GetPosition() == 2: Going the first distance. GetPosition() == 1 never exists.
+                        StepList^ newJobStepList = gcnew StepList(myConnector->SMCSettings);
                         for (int i = 0; i < currentJobStepList->List->Count - currentIndex; i++)
-                        {
                             newJobStepList->Add(currentJobStepList->List[i + currentIndex]->GetCopy());
-                        }
                         currentJobStepList = newJobStepList;
                     }
-                    myJob->SetStepList(newJobStepList->List);
-
+                    myJob->SetStepList(currentJobStepList->List);
                     printf(" [!] Continuing job...\n");
                     myJob->Start(100);
-
+                    
                     wasPressed = false;
                 }
             }
@@ -250,7 +253,8 @@ StepList^ generateCircleStepList(float centerX, float centerY, float radius, flo
 {
     StepList^ stepList = gcnew StepList(connector->SMCSettings);
 
-    for (unsigned int i = 0; i < divisions; i++)
+    stepList->AddXYZ(centerX + radius, centerY, height, 50.0f);
+    for (unsigned int i = 1; i < divisions; i++)
     {
         float radiant = (i * TWO_PI) / divisions;
         stepList->AddXYZ(centerX + radius * cos(radiant), centerY + radius * sin(radiant), height, speed);
