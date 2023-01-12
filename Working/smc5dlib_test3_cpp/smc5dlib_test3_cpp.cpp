@@ -12,9 +12,11 @@ using namespace De::Boenigk::SMC5D::Basics;
 using namespace De::Boenigk::SMC5D::Move;
 
 bool initConnector(Connector^ connector, System::String^ config_loc);
+/* Halts program until given argument module is ready again. */
 void waitForReady(Job^ job);
 void waitForReady(Reference^ reference);
 void waitForReady(Connector^ connector);
+
 StepList^ getResidualStepList(StepList^ stepList, int stepIndex, Connector^ connector);
 StepList^ generateSquareStepList(float minX, float minY, float maxX, float maxY, float height, float speed, Connector^ connector);
 StepList^ generateLineStepList(float startX, float startY, float endX, float endY, float height, float speed, Connector^ connector);
@@ -29,8 +31,8 @@ int main(array<System::String^>^ args)
     /* Initialize Connector. */
     Connector^ myConnector = gcnew Connector(".\\");
     if (!initConnector(myConnector, ".\\config_Haase1290Expert.xml")) return false;
-    SpeedTact^ speedTact = gcnew SpeedTact(myConnector);
-    speedTact->Tact(100);       // Job/ManualMove Speed: 100%
+    SpeedTact^ mySpeedTact = gcnew SpeedTact(myConnector);
+    mySpeedTact->Tact(100);       // Job/ManualMove Speed: 100%
     //speedTact->Tact(0);       // Job/ManualMove Speed:   0%
 
     /* Do reference run. */
@@ -40,13 +42,12 @@ int main(array<System::String^>^ args)
     waitForReady(myReference);
     printf("[+] Done.\n");
 
-
-
-    StepCalc^ stepCalc = gcnew StepCalc();
+    /* Initialize Utilities. */
+    StepCalc^ myStepCalc = gcnew StepCalc();
     Switch^ mySwitch = gcnew Switch(myConnector);
+    ManualMove^ myManualMove = gcnew ManualMove(myConnector);
 
     /* Position roughly in the middle. */
-    ManualMove^ myManualMove = gcnew ManualMove(myConnector);
     //printf("[!] Positioning for safe testing.\n");
     //myManualMove->StepXY(true, true, 150.0f);
     //Sleep(2000);
@@ -55,8 +56,6 @@ int main(array<System::String^>^ args)
     //printf("[+] Done.\n");
 
     /* Setup Job. */
-
-
     StepList^ myJobStepList;
 
     //StepReader^ stepReader = gcnew StepReader(".\\circle.dxf");
@@ -72,7 +71,6 @@ int main(array<System::String^>^ args)
         currentJobStepList->Add(myJobStepList->List[i]->GetCopy());
 
     waitForReady(myConnector);
-
     printf("[!] Starting job.\n");
     Job^ myJob = gcnew Job(myConnector);
     myJob->SetStepList(currentJobStepList->List);
@@ -98,11 +96,12 @@ int main(array<System::String^>^ args)
                     //if (!isStopped) myJob->Pause();
                     //else myJob->Continue(255);
                     
-                    /* Current: Abort job, do movement, calculate residual job and execute it.*/
+                    // TODO: Try out Wait(-1), maybe in conjunction with Continue(100). Supposed to stop the machine.
+
+                    /* Current: Abort/Pause job, do movement, calculate residual job and execute it.*/
                     int currentIndex = myJob->GetPosition();
                     myJob->Pause();
                     //myJob->Abort();
-
                     printf(" [!] Job interrupted at step %d.\n", currentIndex);
                     waitForReady(myConnector);
                     myManualMove->Step(MoveAxis::X, true, 0.0f);    // Somehow resets the connector from "Abort" to "Ready".
@@ -129,10 +128,8 @@ int main(array<System::String^>^ args)
             }
         }
     }
-
     waitForReady(myConnector);
     printf("[+] Job completed.\n");
-
     printf("\n[+] OK!!\n");
 
     return true;
@@ -142,7 +139,7 @@ StepList^ getResidualStepList(StepList^ stepList, int currentStepIndex, Connecto
 {
     // For doing relative offset later
     StepList^ resStepList = gcnew StepList(connector->SMCSettings);
-    StepCalc^ stepCalc = gcnew StepCalc();
+    StepCalc^ myStepCalc = gcnew StepCalc();
     for (int i = currentStepIndex; i < stepList->List->Count; i++)
         resStepList->Add(stepList->List[i]->GetCopy());
 
