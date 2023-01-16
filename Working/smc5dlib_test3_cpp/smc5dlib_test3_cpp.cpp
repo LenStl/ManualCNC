@@ -4,12 +4,17 @@
 #include "stdlib.h"
 #include <array>
 
+#include <iostream>
+#include <fstream>
+
 constexpr double TWO_PI = 6.2831855;
 
 using namespace System;
 using namespace De::Boenigk::SMC5D::Settings;
 using namespace De::Boenigk::SMC5D::Basics;
 using namespace De::Boenigk::SMC5D::Move;
+
+using namespace System::Xml;
 
 bool initConnector(Connector^ connector, System::String^ config_loc);
 /* Halts program until given argument module is ready again. */
@@ -21,9 +26,31 @@ StepList^ getResidualStepList(StepList^ stepList, int stepIndex, Connector^ conn
 StepList^ generateSquareStepList(float minX, float minY, float maxX, float maxY, float height, float speed, Connector^ connector);
 StepList^ generateLineStepList(float startX, float startY, float endX, float endY, float height, float speed, Connector^ connector);
 StepList^ generateCircleStepList(float centerX, float centerY, float radius, float height, float speed, unsigned int divisions, Connector^ connector);
+StepList^ generateCircularTest(float centerX, float centerY, float radius, float height, float speed, Connector^ connector);
 
 int main(array<System::String^>^ args)
 {
+    // Reading .grf4 files.
+    XmlTextReader^ reader = gcnew XmlTextReader("C:\\Users\\CNC\\proj\\ManualCNC\\Working\\smc5dlib_test3_cpp\\circle.grf4");
+    while (reader->Read())
+    {
+        if (reader->Name->Equals("Polygon"))
+        {
+            reader->Read();     // Read in the next node.
+            String^ str = reader->Value->Replace(" ", "");
+
+            // TODO: Doesnt work.
+            String^ hex = str->Substring(0, 8);
+            unsigned int num = UInt32::Parse(hex, System::Globalization::NumberStyles::AllowHexSpecifier);
+            
+            array<unsigned char>^ floatVals = BitConverter::GetBytes(num);
+            float f = BitConverter::ToSingle(floatVals, 0);
+            Console::WriteLine(f);
+        }
+    }
+    reader->Close();
+    return 0;
+
     printf(" ------------------------------------------------\n");
     printf("| An attempt at using smc5d.core.dll from C++.   |\n");
     printf(" ------------------------------------------------\n\n");
@@ -58,18 +85,22 @@ int main(array<System::String^>^ args)
     /* Setup Job. */
     StepList^ myJobStepList = gcnew StepList(myConnector->SMCSettings);
 
-    // TODO: Read in files.
-    //StepReader^ stepReader = gcnew StepReader("..\\..\\..\\smc5dlib_test3_cpp\\circle.nc");
-    //stepReader->Open();
-    //if (!stepReader->IsOpened) return 1;
-    //
-    //stepReader->Close();
-    //printf("Success!");
-    //return 0;
-
-    //myJobStepList = generateCircleStepList(300.0f, 300.0f, 100.0f, 100.0f, 30.0f, 100, myConnector); // Speed 30.0f smooth.
+    //myJobStepList = generateCircleStepList(300.0f, 300.0f, 100.0f, 100.0f, 50.0f, 800, myConnector); // Speed 30.0f smooth.
+    myJobStepList = generateCircularTest(300.0f, 300.0f, 100.0f, 100.0f, 10.0f, myConnector);
     //myJobStepList = generateLineStepList(150.0f, 150.0f, 400.0f, 400.0f, 100.0f, 30.0f, myConnector);
-    myJobStepList = generateSquareStepList(100.0f, 100.0f, 300.0f, 300.0f, 100.0f, 50.0f, myConnector);
+    
+    //myJobStepList = generateSquareStepList(100.0f, 100.0f, 300.0f, 300.0f, 100.0f, 50.0f, myConnector);
+
+    //StepWriter^ myStepWriter = gcnew StepWriter("C:\\Users\\CNC\\proj\\ManualCNC\\Working\\smc5dlib_test3_cpp\\write.bin");
+    //myStepWriter->Write(myJobStepList->List);
+    //myStepWriter->Close();
+    //
+    //
+    //
+    //StepReader^ myStepReader = gcnew StepReader("C:\\Users\\CNC\\proj\\ManualCNC\\Working\\smc5dlib_test3_cpp\\write.bin");
+    //myJobStepList->List = myStepReader->ReadToEnd();
+    //myStepReader->Close();
+
     StepList^ currentJobStepList = gcnew StepList(myConnector->SMCSettings);
     for (int i = 0; i < myJobStepList->List->Count; i++)
         currentJobStepList->Add(myJobStepList->List[i]->GetCopy());
@@ -78,6 +109,7 @@ int main(array<System::String^>^ args)
     printf("[!] Starting job.\n");
     Job^ myJob = gcnew Job(myConnector);
     myJob->SetStepList(currentJobStepList->List);
+    waitForReady(myJob);
     myJob->Start(100);
     /* Test Area */
     {
@@ -97,7 +129,7 @@ int main(array<System::String^>^ args)
                     /* Speed control with SpeedTact. (Slows down, also affects Manual Move, doesnt stop the job)*/
                     //if (!isStopped) speedTact->Tact(25);
                     //else speedTact->Tact(100);
-                    /* Pausing and continuing job .*/
+                    /* Pausing and continuing job. (Continue doesnt seem to work.*/
                     //if (!isStopped) myJob->Pause();
                     //else myJob->Continue(255);
 
@@ -106,17 +138,17 @@ int main(array<System::String^>^ args)
                     int currentIndex = myJob->GetPosition();
                     //myJob->Pause();                               // Slow stopping, while still following path.
                     myJob->Abort();
+                    //myJob->Dispose();
                     printf(" [!] Job interrupted at step %d.\n", currentIndex);
                     waitForReady(myConnector);
                     myManualMove->Step(MoveAxis::X, true, 0.0f);    // Somehow resets the connector from "Abort" to "Ready".
                     myManualMove->Stop();                           //
                     Sleep(2000);
-                    //currentJobStepList->List->RemoveRange(0, currentIndex - 1);
                     myJob = gcnew Job(myConnector);
                     
                     if (currentIndex > 0)
                     {
-                        currentIndex--; // Slight Non-Linearity in the step indices: GetPosition() == 0: Initializing, moving to the first coordinate. GetPosition() == 2: Going the first distance. GetPosition() == 1 never exists.
+                        currentIndex--; // Slight Non-Linearity in the step indices: GetPosition() == 0: Initializing, moving to the first coordinate. GetPosition() == 2: Going the first distance. GetPosition() == 1 doesnt exists.
                         StepList^ newJobStepList = gcnew StepList(myConnector->SMCSettings);
                         for (int i = 0; i < currentJobStepList->List->Count - currentIndex; i++)
                             newJobStepList->Add(currentJobStepList->List[i + currentIndex]->GetCopy());
@@ -124,6 +156,8 @@ int main(array<System::String^>^ args)
                     }
                     myJob->SetStepList(currentJobStepList->List);
                     printf(" [!] Continuing job...\n");
+                    waitForReady(myConnector);
+                    waitForReady(myJob);
                     myJob->Start(100);
                     
                     wasPressed = false;
@@ -227,6 +261,14 @@ void waitForReady(Connector^ connector)
     {
         Sleep(1);
     }
+}
+StepList^ generateCircularTest(float centerX, float centerY, float radius, float height, float speed, Connector^ connector)
+{
+    StepList^ stepList = gcnew StepList(connector->SMCSettings);
+    stepList->AddXYZ(centerX + radius, centerY, height, 50.0f);
+    stepList->AddXYZAB(centerX, centerY + radius, height, centerX, centerY, speed);
+
+    return stepList;
 }
 StepList^ generateSquareStepList(float minX, float minY, float maxX, float maxY, float height, float speed, Connector^ connector)
 {
