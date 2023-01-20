@@ -15,6 +15,7 @@ using namespace De::Boenigk::SMC5D::Basics;
 using namespace De::Boenigk::SMC5D::Move;
 
 using namespace System::Xml;
+using namespace System::Globalization;
 
 bool initConnector(Connector^ connector, System::String^ config_loc);
 /* Halts program until given argument module is ready again. */
@@ -28,26 +29,39 @@ StepList^ generateLineStepList(float startX, float startY, float endX, float end
 StepList^ generateCircleStepList(float centerX, float centerY, float radius, float height, float speed, unsigned int divisions, Connector^ connector);
 StepList^ generateCircularTest(float centerX, float centerY, float radius, float height, float speed, Connector^ connector);
 
+static int Reverse(int value)
+{
+    byte* p = (byte*)&value;
+    return (*p << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
+}
 int main(array<System::String^>^ args)
 {
-    // Reading .grf4 files.
-    XmlTextReader^ reader = gcnew XmlTextReader("C:\\Users\\CNC\\proj\\ManualCNC\\Working\\smc5dlib_test3_cpp\\circle.grf4");
+    // Reading .grf4 files. This can now read the files <Polygon>s.
+    //XmlTextReader^ reader = gcnew XmlTextReader("C:\\Users\\CNC\\proj\\ManualCNC\\Working\\smc5dlib_test3_cpp\\circle.grf4");
+    XmlTextReader^ reader = gcnew XmlTextReader("C:\\Projects\\C++ Projects\\ManualCNC\\Working\\smc5dlib_test3_cpp\\circle.grf4");
+    Console::Write("[");
     while (reader->Read())
     {
         if (reader->Name->Equals("Polygon"))
         {
-            reader->Read();     // Read in the next node.
-            String^ str = reader->Value->Replace(" ", "");
+            reader->Read(); // Read in the next node.
+            if (reader->Value->Length > 8)
+            {
+                String^ str = reader->Value->Replace(" ", "");
 
-            // TODO: Doesnt work.
-            String^ hex = str->Substring(0, 8);
-            unsigned int num = UInt32::Parse(hex, System::Globalization::NumberStyles::AllowHexSpecifier);
-            
-            array<unsigned char>^ floatVals = BitConverter::GetBytes(num);
-            float f = BitConverter::ToSingle(floatVals, 0);
-            Console::WriteLine(f);
+                String^ hex_x = str->Substring(0, 8);
+                String^ hex_y = str->Substring(8, 8);
+                // Be careful of endianess.
+                unsigned int num = Reverse(UInt32::Parse(hex_y, System::Globalization::NumberStyles::AllowHexSpecifier));
+                
+                array<unsigned char>^ floatVals = BitConverter::GetBytes(num);
+                float f = BitConverter::ToSingle(floatVals, 0);
+                Console::WriteLine(f.ToString(CultureInfo::InvariantCulture) + ",");
+            }
         }
     }
+    Console::Write("]");
+    Console::ReadLine();
     reader->Close();
     return 0;
 
