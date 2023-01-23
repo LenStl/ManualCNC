@@ -6,11 +6,11 @@ using namespace System::Runtime::CompilerServices;
 using namespace System::Runtime::InteropServices;
 using namespace System::Security::Permissions;
 
-[assembly:AssemblyTitleAttribute(L"smc5dlibtest3cpp")];
+[assembly:AssemblyTitleAttribute(L"main")];
 [assembly:AssemblyDescriptionAttribute(L"")];
 [assembly:AssemblyConfigurationAttribute(L"")];
 [assembly:AssemblyCompanyAttribute(L"")];
-[assembly:AssemblyProductAttribute(L"smc5dlibtest3cpp")];
+[assembly:AssemblyProductAttribute(L"main")];
 [assembly:AssemblyCopyrightAttribute(L"Copyright (c)  2022")];
 [assembly:AssemblyTrademarkAttribute(L"")];
 [assembly:AssemblyCultureAttribute(L"")];

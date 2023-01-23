@@ -1,48 +1,48 @@
 #include "pch.h"
 #include "step_io.h"
 
-static int reverse_endian(int value);
+static int reverseEndian(int value);
 
-StepList^ StepIO::generate_square(float minX, float minY, float maxX, float maxY, float height, float speed, SMCSettings^ smc_settings)
+StepList^ StepIO::generateSquare(float minX, float minY, float maxX, float maxY, float height, float speed, SMCSettings^ smc_settings)
 {
-    StepList^ stepList = gcnew StepList(smc_settings);
+    StepList^ step_list = gcnew StepList(smc_settings);
 
-    stepList->AddXYZ(minX, minY, height, speed);
-    stepList->AddXYZ(maxX, minY, height, speed);
-    stepList->AddXYZ(maxX, maxY, height, speed);
-    stepList->AddXYZ(minX, maxY, height, speed);
-    stepList->AddXYZ(minX, minY, height, speed);
+    step_list->AddXYZ(minX, minY, height, speed);
+    step_list->AddXYZ(maxX, minY, height, speed);
+    step_list->AddXYZ(maxX, maxY, height, speed);
+    step_list->AddXYZ(minX, maxY, height, speed);
+    step_list->AddXYZ(minX, minY, height, speed);
 
-    return stepList;
+    return step_list;
 }
-StepList^ StepIO::generate_line(float startX, float startY, float endX, float endY, float height, float speed, SMCSettings^ smc_settings)
+StepList^ StepIO::generateLine(float startX, float startY, float endX, float endY, float height, float speed, SMCSettings^ smc_settings)
 {
-    StepList^ stepList = gcnew StepList(smc_settings);
+    StepList^ step_list = gcnew StepList(smc_settings);
 
-    stepList->AddXYZ(startX, startY, height, speed);
-    stepList->AddXYZ(endX, endY, height, speed);
+    step_list->AddXYZ(startX, startY, height, speed);
+    step_list->AddXYZ(endX, endY, height, speed);
 
-    return stepList;
+    return step_list;
 }
-StepList^ StepIO::generate_circle(float centerX, float centerY, float radius, float height, float speed, unsigned int divisions, SMCSettings^ smc_settings)
+StepList^ StepIO::generateCircle(float centerX, float centerY, float radius, float height, float speed, unsigned int divisions, SMCSettings^ smc_settings)
 {
-    StepList^ stepList = gcnew StepList(smc_settings);
+    StepList^ step_list = gcnew StepList(smc_settings);
 
-    stepList->AddXYZ(centerX + radius, centerY, height, 50.0f);
+    step_list->AddXYZ(centerX + radius, centerY, height, 50.0f);
     for (unsigned int i = 1; i < divisions; i++)
     {
         float radiant = (i * TWO_PI) / divisions;
-        stepList->AddXYZ(centerX + radius * cos(radiant), centerY + radius * sin(radiant), height, speed);
+        step_list->AddXYZ(centerX + radius * cos(radiant), centerY + radius * sin(radiant), height, speed);
     }
-    stepList->AddXYZ(centerX + radius, centerY, height, speed);
+    step_list->AddXYZ(centerX + radius, centerY, height, speed);
 
-    return stepList;
+    return step_list;
 }
-StepList^ StepIO::load_grf4(System::String^ file_path, float height, float speed, SMCSettings^ smc_settings)
+StepList^ StepIO::loadGRF(System::String^ file_path, float height, float speed, SMCSettings^ smc_settings)
 {
-    // Quite specific to cncgraf.
+    // Quite specific to cncGraF.
     XmlTextReader^ reader = gcnew XmlTextReader(file_path);
-    StepList^ stepList = gcnew StepList(smc_settings);
+    StepList^ step_list = gcnew StepList(smc_settings);
 
     while (reader->Read())
     {
@@ -50,28 +50,28 @@ StepList^ StepIO::load_grf4(System::String^ file_path, float height, float speed
         {
             reader->Read(); // Read in the next node.
             if (reader->Value->Length <= 8) continue;   // Skip the empty lines.
-            // TODO: Be careful of endianess. Needs rework when Refactoring!!
             String^ str = reader->Value->Replace(" ", "");
 
             // Read x-value.
             String^ hex = str->Substring(0, 8);
-            unsigned int num = reverse_endian(UInt32::Parse(hex, System::Globalization::NumberStyles::AllowHexSpecifier));
-            array<unsigned char>^ floatVals = BitConverter::GetBytes(num);
-            float x = BitConverter::ToSingle(floatVals, 0);
+            unsigned int num = reverseEndian(UInt32::Parse(hex, System::Globalization::NumberStyles::AllowHexSpecifier));
+            array<unsigned char>^ float_vals = BitConverter::GetBytes(num);
+            float x = BitConverter::ToSingle(float_vals, 0);
             // Read y_value
             hex = str->Substring(8, 8);
-            num = reverse_endian(UInt32::Parse(hex, System::Globalization::NumberStyles::AllowHexSpecifier));
-            floatVals = BitConverter::GetBytes(num);
-            float y = BitConverter::ToSingle(floatVals, 0);
+            num = reverseEndian(UInt32::Parse(hex, System::Globalization::NumberStyles::AllowHexSpecifier));
+            float_vals = BitConverter::GetBytes(num);
+            float y = BitConverter::ToSingle(float_vals, 0);
+            
             // Add step to the step list.
-            stepList->AddXYZ(x, y, height, speed);
+            step_list->AddXYZ(x, y, height, speed);
         }
     }
     reader->Close();
-    return stepList;
+    return step_list;
 }
 
-StepList^ StepIO::load_binary(System::String^ file_path, SMCSettings^ smc_settings)
+StepList^ StepIO::loadBinary(System::String^ file_path, SMCSettings^ smc_settings)
 {
     StepReader^ step_reader = gcnew StepReader(file_path);
     if (step_reader == nullptr) return nullptr;
@@ -80,15 +80,15 @@ StepList^ StepIO::load_binary(System::String^ file_path, SMCSettings^ smc_settin
     step_reader->Close();
     return step_list;
 }
-void StepIO::write_binary(System::String^ file_path, StepList^ step_list)
+void StepIO::writeBinary(System::String^ file_path, StepList^ step_list)
 {
-    StepWriter^ myStepWriter = gcnew StepWriter(file_path);
-    if (myStepWriter == nullptr) return;
-    myStepWriter->Write(step_list->List);
-    myStepWriter->Close();
+    StepWriter^ step_writer = gcnew StepWriter(file_path);
+    if (step_writer == nullptr) return;
+    step_writer->Write(step_list->List);
+    step_writer->Close();
 }
 
-static int reverse_endian(int value)
+static int reverseEndian(int value)
 {
     byte* p = (byte*)&value;
     return (*p << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
