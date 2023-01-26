@@ -2,6 +2,8 @@
 #include "step_io.h"
 
 #include <msclr/gcroot.h>
+#include <stdio.h>
+#include <windows.h>
 using namespace msclr;
 
 using namespace System;
