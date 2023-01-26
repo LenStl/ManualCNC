@@ -8,24 +8,25 @@ void waitForReady(Connector^ connector);
 
 JobController::JobController(const char* config_loc, const char* log_loc)
 {
-    m_Connector = gcnew Connector(gcnew String(log_loc));
-    initController(m_Connector, gcnew String(config_loc));
+    mConnector = gcnew Connector(gcnew String(log_loc));
+    initController(mConnector, gcnew String(config_loc));
 }
 JobController::~JobController()
 {
-    delete m_SpeedTact;
+    delete mSpeedTact;
 
-    m_Job->Abort();
-    delete m_Job;
-    delete m_StepList;
+    mJob->Abort();
+    delete mJob;
 
-    m_Reference->Abort();
-    delete m_Reference;
+    delete mStepList;
 
-    m_ManualMove->Stop();
-    delete m_ManualMove;
+    mReference->Abort();
+    delete mReference;
 
-    delete m_Connector;
+    mManualMove->Stop();
+    delete mManualMove;
+
+    delete mConnector;
 }
 
 bool JobController::initController(Connector^ connector, System::String^ config_loc)
@@ -53,45 +54,81 @@ bool JobController::initController(Connector^ connector, System::String^ config_
     }
     printf("\n[+] Connection successfully established with %s.\n", connector->GetControllerName());
 
-    m_DidReferencePass = false;
-    m_Reference = gcnew Reference(m_Connector);
-    m_ManualMove = gcnew ManualMove(m_Connector);
-    m_SpeedTact = gcnew SpeedTact(m_Connector);
-    m_SpeedTact->Tact(100);
+    mDidReferencePass = false;
+    mReference = gcnew Reference(mConnector);
+    mManualMove = gcnew ManualMove(mConnector);
+    mSpeedTact = gcnew SpeedTact(mConnector);
+    mSpeedTact->Tact(100);
 
     return true;
 }
 void JobController::doReference()
 {
     printf("[!] Doing reference run.\n");
-    m_Reference->Start();
-    waitForReady(m_Reference);
+    mReference->Start();
+    waitForReady(mReference);
     printf("[+] Done.\n");
-    m_DidReferencePass = true;
+    mDidReferencePass = true;
+}
+bool JobController::beginJob()
+{
+    if (!mDidReferencePass) return false;
+    StepList^ currentStepList = gcnew StepList(mConnector->SMCSettings);
+    for (int i = 0; i < mStepList->List->Count; i++)
+        currentStepList->Add(mStepList->List[i]->GetCopy());
+
+    waitForReady(mConnector);
+    printf("[!] Cloning job.\n");
+    mJob = gcnew Job(mConnector);
+    mJob->SetStepList(currentStepList->List);
+    waitForReady(mJob);
+
+    mJob->Start(100);
+    printf("[+] Done.\n");
+    printf("[!] Starting job.\n");
+
+    return true;
+}
+void JobController::abortJob()
+{
+    mJob->Abort();
+
+    delete mJob;
+}
+void JobController::setJobSpeed(int jobSpeed)
+{
+    if (jobSpeed < 0 || jobSpeed > 100) return;
+    if (mSpeedTact->Percent == jobSpeed) return;
+
+    while (mSpeedTact->Percent != jobSpeed)
+    {
+        mSpeedTact->Percent < jobSpeed ? mSpeedTact->TactPlus() : mSpeedTact->TactMinus();
+        Sleep(30);
+    }
 }
 
 bool JobController::loadGRF(const char* file_path)
 {
-    m_StepList = StepIO::loadGRF(gcnew String(file_path), m_TravelHeight, m_BaseTravelSpeed, m_Connector->SMCSettings);
-    return m_StepList.operator->() != nullptr;
+    mStepList = StepIO::loadGRF(gcnew String(file_path), mTravelHeight, mBaseTravelSpeed, mConnector->SMCSettings);
+    return mStepList.operator->() != nullptr;
 }
 
 void JobController::setTravelHeight(float travelHeight)
 {
-    m_TravelHeight = travelHeight;
+    mTravelHeight = travelHeight;
     // Update the steps accordingly.
-    if (m_StepList.operator->() == nullptr) return;
-    for (int i = 0; i < m_StepList->List->Count; i++)
-        m_StepList->List[i]->Z = travelHeight;
+    if (mStepList.operator->() == nullptr) return;
+    for (int i = 0; i < mStepList->List->Count; i++)
+        mStepList->List[i]->Z = travelHeight;
 }
 void JobController::setBaseTravelSpeed(float baseTravelSpeed)
 {
-    m_BaseTravelSpeed = baseTravelSpeed;
+    mBaseTravelSpeed = baseTravelSpeed;
     // Update the steps accordingly.
-    if (m_StepList.operator->() == nullptr) return;
-    m_StepList->List[0]->Speed = StepIO::INIT_SPEED;
-    for (int i = 1; i < m_StepList->List->Count; i++)
-        m_StepList->List[i]->Speed = baseTravelSpeed;
+    if (mStepList.operator->() == nullptr) return;
+    mStepList->List[0]->Speed = StepIO::INIT_SPEED;
+    for (int i = 1; i < mStepList->List->Count; i++)
+        mStepList->List[i]->Speed = baseTravelSpeed;
 }
 
 void waitForReady(Job^ job)

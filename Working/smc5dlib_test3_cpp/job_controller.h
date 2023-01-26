@@ -27,35 +27,40 @@ public:
 
     bool loadGRF(const char* file_path);
     void JobController::generateCircle(float center_x, float center_y, float radius, unsigned int divisions) {
-        m_StepList = StepIO::generateCircle(center_x, center_y, radius, m_TravelHeight, m_BaseTravelSpeed, divisions, m_Connector->SMCSettings);
+        mStepList = StepIO::generateCircle(center_x, center_y, radius, mTravelHeight, mBaseTravelSpeed, divisions, mConnector->SMCSettings);
     };
     void JobController::generateLine(float start_x, float start_y, float end_x, float end_y) {
-        m_StepList = StepIO::generateLine(start_x, start_y, end_x, end_y, m_TravelHeight, m_BaseTravelSpeed, m_Connector->SMCSettings);
+        mStepList = StepIO::generateLine(start_x, start_y, end_x, end_y, mTravelHeight, mBaseTravelSpeed, mConnector->SMCSettings);
     };
     void JobController::generateSquare(float min_x, float min_y, float max_x, float max_y) {
-        m_StepList = StepIO::generateSquare(min_x, min_y, max_x, max_y, m_TravelHeight, m_BaseTravelSpeed, m_Connector->SMCSettings);
+        mStepList = StepIO::generateSquare(min_x, min_y, max_x, max_y, mTravelHeight, mBaseTravelSpeed, mConnector->SMCSettings);
     };
 
     void setTravelHeight(float travelHeight);
-    float getTravelHeight() { return m_TravelHeight; }
+    float getTravelHeight() { return mTravelHeight; }
 
     void setBaseTravelSpeed(float baseTravelSpeed);
-    float getBaseTravelSpeed() { return m_BaseTravelSpeed; }
+    float getBaseTravelSpeed() { return mBaseTravelSpeed; }
 
     bool JobController::isJobRunning() {
-        return (m_Job.operator->() == nullptr) ? false : m_Job->Status != SMCStatus::Ready;
+        return (mJob.operator->() == nullptr) ? false : mJob->Status != SMCStatus::Ready;
     };
+
+    bool beginJob();
+    void abortJob();
+    void setJobSpeed(int jobSpeed);
+    float JobController::getJobSpeed() { return (mJob.operator->() == nullptr) ? -1.0f : mSpeedTact->Percent; }
 
 
 
 private:
-    bool m_DidReferencePass;
-    float m_TravelHeight;
-    float m_BaseTravelSpeed;
-    gcroot<Connector^>  m_Connector;
-    gcroot<Reference^>  m_Reference;
-    gcroot<ManualMove^> m_ManualMove;
-    gcroot<SpeedTact^>  m_SpeedTact;
-    gcroot<StepList^>   m_StepList;
-    gcroot<Job^>        m_Job;
+    bool mDidReferencePass;
+    float mTravelHeight;
+    float mBaseTravelSpeed;
+    gcroot<Connector^>  mConnector;
+    gcroot<Reference^>  mReference;
+    gcroot<ManualMove^> mManualMove;
+    gcroot<SpeedTact^>  mSpeedTact;
+    gcroot<StepList^>   mStepList;
+    gcroot<Job^>        mJob;
 };
