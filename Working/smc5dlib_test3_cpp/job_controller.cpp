@@ -6,84 +6,98 @@ void waitForReady(Job^ job);
 void waitForReady(Reference^ reference);
 void waitForReady(Connector^ connector);
 
-JobController::JobController(const char* config_loc, const char* log_loc)
-{
-    mConnector = gcnew Connector(gcnew String(log_loc));
-    initController(mConnector, gcnew String(config_loc));
-}
+JobController::JobController() {}
 JobController::~JobController()
 {
-    delete mSpeedTact;
+    delete m_SpeedTact;
+    delete m_StepList;
 
-    mJob->Abort();
-    delete mJob;
+    if (m_Job.operator->()) m_Job->Abort();
+    delete m_Job;
 
-    delete mStepList;
+    if (m_Reference.operator->()) m_Reference->Abort();
+    delete m_Reference;
 
-    mReference->Abort();
-    delete mReference;
+    if (m_ManualMove.operator->()) m_ManualMove->Stop();
+    delete m_ManualMove;
 
-    mManualMove->Stop();
-    delete mManualMove;
-
-    delete mConnector;
+    delete m_Connector;
 }
-
-bool JobController::initController(Connector^ connector, System::String^ config_loc)
+bool JobController::initController(const char* configLoc, const char* logLoc)
 {
-    if (!(connector->Load(config_loc)))
+    m_Connector = gcnew Connector(gcnew String(logLoc));
+
+    if (!m_Connector->Load(gcnew String(configLoc)))
     {
         printf("[-] Config loading failed.\n");
         return false;
     }
     printf("[!] Configuration loaded. Trying to connect .");
-
-    SMCStatus result = connector->Enable();
+    m_Connector->Enable();
 
     int timeout = 5000;
-    while (connector->Status != SMCStatus::Ready && timeout > 0)
+    while (m_Connector->Status != SMCStatus::Ready && timeout > 0)
     {
         Sleep(50);
         timeout -= 50;
         printf(".");
     }
-    if (connector->Status != SMCStatus::Ready)
+    if (m_Connector->Status != SMCStatus::Ready)
     {
-        printf("\n[-] Timeout with error %d.\n", connector->Status);
+        printf("\n[-] Timeout with error %d.\n", m_Connector->Status);
         return false;
     }
-    printf("\n[+] Connection successfully established with %s.\n", connector->GetControllerName());
+    printf("\n[+] Connection successfully established with %s.\n", m_Connector->GetControllerName());
 
-    mDidReferencePass = false;
-    mReference = gcnew Reference(mConnector);
-    mManualMove = gcnew ManualMove(mConnector);
-    mSpeedTact = gcnew SpeedTact(mConnector);
-    mSpeedTact->Tact(100);
+    m_DidReferencePass = false;
+    m_Reference = gcnew Reference(m_Connector);
+    m_ManualMove = gcnew ManualMove(m_Connector);
+    m_SpeedTact = gcnew SpeedTact(m_Connector);
+    m_SpeedTact->Tact(100);
 
     return true;
 }
+
 void JobController::doReference()
 {
     printf("[!] Doing reference run.\n");
-    mReference->Start();
-    waitForReady(mReference);
+    m_Reference->Start();
+    waitForReady(m_Reference);
     printf("[+] Done.\n");
-    mDidReferencePass = true;
+    m_DidReferencePass = true;
 }
+
+bool JobController::loadGRF(const char* filePath)
+{
+    return (m_StepList = StepIO::loadGRF(gcnew String(filePath), m_TravelHeight, m_BaseTravelSpeed, m_Connector->SMCSettings)).operator->() != nullptr;
+}
+void JobController::generateCircle(float centerX, float centerY, float radius, unsigned int divisions)
+{
+    m_StepList = StepIO::generateCircle(centerX, centerY, radius, m_TravelHeight, m_BaseTravelSpeed, divisions, m_Connector->SMCSettings);
+}
+void JobController::generateLine(float startX, float startY, float endX, float endY)
+{
+    m_StepList = StepIO::generateLine(startX, startY, endX, endY, m_TravelHeight, m_BaseTravelSpeed, m_Connector->SMCSettings);
+}
+void JobController::generateSquare(float minX, float minY, float maxX, float maxY)
+{
+    m_StepList = StepIO::generateSquare(minX, minY, maxX, maxY, m_TravelHeight, m_BaseTravelSpeed, m_Connector->SMCSettings);
+}
+
 bool JobController::beginJob()
 {
-    if (!mDidReferencePass) return false;
-    StepList^ currentStepList = gcnew StepList(mConnector->SMCSettings);
-    for (int i = 0; i < mStepList->List->Count; i++)
-        currentStepList->Add(mStepList->List[i]->GetCopy());
+    if (!m_DidReferencePass) return false;
+    StepList^ currentStepList = gcnew StepList(m_Connector->SMCSettings);
+    for (int i = 0; i < m_StepList->List->Count; i++)
+        currentStepList->Add(m_StepList->List[i]->GetCopy());
 
-    waitForReady(mConnector);
+    waitForReady(m_Connector);
     printf("[!] Cloning job.\n");
-    mJob = gcnew Job(mConnector);
-    mJob->SetStepList(currentStepList->List);
-    waitForReady(mJob);
+    m_Job = gcnew Job(m_Connector);
+    m_Job->SetStepList(currentStepList->List);
+    waitForReady(m_Job);
 
-    mJob->Start(100);
+    m_Job->Start(100);
     printf("[+] Done.\n");
     printf("[!] Starting job.\n");
 
@@ -91,44 +105,60 @@ bool JobController::beginJob()
 }
 void JobController::abortJob()
 {
-    mJob->Abort();
-
-    delete mJob;
+    m_Job->Abort();
+    delete m_Job;
+}
+bool JobController::isJobRunning() {
+    return (m_Job.operator->() == nullptr) ? false : m_Job->Status != SMCStatus::Ready;
 }
 void JobController::setJobSpeed(int jobSpeed)
 {
     if (jobSpeed < 0 || jobSpeed > 100) return;
-    if (mSpeedTact->Percent == jobSpeed) return;
+    if (m_SpeedTact->Percent == jobSpeed) return;
 
-    while (mSpeedTact->Percent != jobSpeed)
+    while (m_SpeedTact->Percent != jobSpeed)
     {
-        mSpeedTact->Percent < jobSpeed ? mSpeedTact->TactPlus() : mSpeedTact->TactMinus();
+        m_SpeedTact->Percent < jobSpeed ? m_SpeedTact->TactPlus() : m_SpeedTact->TactMinus();
         Sleep(30);
     }
 }
-
-bool JobController::loadGRF(const char* file_path)
+void JobController::increaseJobSpeed()
 {
-    mStepList = StepIO::loadGRF(gcnew String(file_path), mTravelHeight, mBaseTravelSpeed, mConnector->SMCSettings);
-    return mStepList.operator->() != nullptr;
+    setJobSpeed(m_SpeedTact->Percent + 1);
+}
+void JobController::decreaseJobSpeed()
+{
+    setJobSpeed(m_SpeedTact->Percent - 1);
+}
+float JobController::getJobSpeed() 
+{ 
+    return (m_Job.operator->() == nullptr) ? -1.0f : m_SpeedTact->Percent; 
 }
 
 void JobController::setTravelHeight(float travelHeight)
 {
-    mTravelHeight = travelHeight;
+    m_TravelHeight = travelHeight;
     // Update the steps accordingly.
-    if (mStepList.operator->() == nullptr) return;
-    for (int i = 0; i < mStepList->List->Count; i++)
-        mStepList->List[i]->Z = travelHeight;
+    if (m_StepList.operator->() == nullptr) return;
+    for (int i = 0; i < m_StepList->List->Count; i++)
+        m_StepList->List[i]->Z = travelHeight;
+}
+float JobController::getTravelHeight() 
+{ 
+    return m_TravelHeight; 
 }
 void JobController::setBaseTravelSpeed(float baseTravelSpeed)
 {
-    mBaseTravelSpeed = baseTravelSpeed;
+    m_BaseTravelSpeed = baseTravelSpeed;
     // Update the steps accordingly.
-    if (mStepList.operator->() == nullptr) return;
-    mStepList->List[0]->Speed = StepIO::INIT_SPEED;
-    for (int i = 1; i < mStepList->List->Count; i++)
-        mStepList->List[i]->Speed = baseTravelSpeed;
+    if (m_StepList.operator->() == nullptr) return;
+    m_StepList->List[0]->Speed = StepIO::INIT_SPEED;
+    for (int i = 1; i < m_StepList->List->Count; i++)
+        m_StepList->List[i]->Speed = baseTravelSpeed;
+}
+float JobController::getBaseTravelSpeed() 
+{ 
+    return m_BaseTravelSpeed; 
 }
 
 void waitForReady(Job^ job)
