@@ -52,7 +52,7 @@ int main(array<System::String^>^ args)
 
     /* Setup Job. */
     StepList^ job_step_list = gcnew StepList(connector->SMCSettings);
-    job_step_list = StepIO::loadGRF(String::Concat(directory, file_name), 100.0f, 30.0f, connector->SMCSettings);
+    job_step_list = StepIO::loadGRF(String::Concat(directory, file_name), 100.0f, 20.0f, connector->SMCSettings);
     //job_step_list = StepIO::generateCircle(300.0f, 300.0f, 100.0f, 100.0f, 50.0f, 800, connector->SMCSettings); // Speed 30.0f smooth.
     //job_step_list = StepIO::generateLine(150.0f, 150.0f, 400.0f, 400.0f, 100.0f, 30.0f, connector->SMCSettings);
     //job_step_list = StepIO::generateSquare(100.0f, 100.0f, 300.0f, 300.0f, 100.0f, 50.0f, connector->SMCSettings);
