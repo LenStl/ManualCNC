@@ -6,28 +6,27 @@ void waitForReady(Job^ job);
 void waitForReady(Reference^ reference);
 void waitForReady(Connector^ connector);
 
-JobController::JobController() {}
 JobController::~JobController()
 {
     delete m_SpeedTact;
     delete m_StepList;
 
-    if (m_Job.operator->()) m_Job->Abort();
+    if (m_Job.operator->() != nullptr) m_Job->Abort();
     delete m_Job;
 
-    if (m_Reference.operator->()) m_Reference->Abort();
+    if (m_Reference.operator->() != nullptr) m_Reference->Abort();
     delete m_Reference;
 
-    if (m_ManualMove.operator->()) m_ManualMove->Stop();
+    if (m_ManualMove.operator->() != nullptr) m_ManualMove->Stop();
     delete m_ManualMove;
 
     delete m_Connector;
 }
-bool JobController::initController(const char* configLoc, const char* logLoc)
+bool JobController::initController(const char* configPath, const char* logPath)
 {
-    m_Connector = gcnew Connector(gcnew String(logLoc));
+    m_Connector = gcnew Connector(gcnew String(logPath));
 
-    if (!m_Connector->Load(gcnew String(configLoc)))
+    if (!m_Connector->Load(gcnew String(configPath)))
     {
         printf("[-] Config loading failed.\n");
         return false;
@@ -60,6 +59,7 @@ bool JobController::initController(const char* configLoc, const char* logLoc)
 
 void JobController::doReference()
 {
+    if (m_Reference.operator->() == nullptr) return;
     printf("[!] Doing reference run.\n");
     m_Reference->Start();
     waitForReady(m_Reference);
@@ -83,10 +83,14 @@ void JobController::generateSquare(float minX, float minY, float maxX, float max
 {
     m_StepList = StepIO::generateSquare(minX, minY, maxX, maxY, m_TravelHeight, m_BaseTravelSpeed, m_Connector->SMCSettings);
 }
+void JobController::printCurrentStepList()
+{
+    printf("%s\n", m_StepList->ToString());
+}
 
 bool JobController::beginJob()
 {
-    if (!m_DidReferencePass) return false;
+    if (!m_DidReferencePass || (m_StepList.operator->() == nullptr)) return false;
     StepList^ currentStepList = gcnew StepList(m_Connector->SMCSettings);
     for (int i = 0; i < m_StepList->List->Count; i++)
         currentStepList->Add(m_StepList->List[i]->GetCopy());
@@ -105,34 +109,33 @@ bool JobController::beginJob()
 }
 void JobController::abortJob()
 {
+    if (m_Job.operator-> () == nullptr) return;
     m_Job->Abort();
     delete m_Job;
 }
 bool JobController::isJobRunning() {
     return (m_Job.operator->() == nullptr) ? false : m_Job->Status != SMCStatus::Ready;
 }
+void JobController::increaseJobSpeed()
+{
+    m_SpeedTact->TactPlus();
+}
+void JobController::decreaseJobSpeed()
+{
+    m_SpeedTact->TactMinus();
+}
 void JobController::setJobSpeed(int jobSpeed)
 {
-    if (jobSpeed < 0 || jobSpeed > 100) return;
-    if (m_SpeedTact->Percent == jobSpeed) return;
+    if (jobSpeed < 0 || jobSpeed > 100 || m_SpeedTact->Percent == jobSpeed) return;
 
     while (m_SpeedTact->Percent != jobSpeed)
     {
         m_SpeedTact->Percent < jobSpeed ? m_SpeedTact->TactPlus() : m_SpeedTact->TactMinus();
-        Sleep(30);
     }
 }
-void JobController::increaseJobSpeed()
+int JobController::getJobSpeed()
 {
-    setJobSpeed(m_SpeedTact->Percent + 1);
-}
-void JobController::decreaseJobSpeed()
-{
-    setJobSpeed(m_SpeedTact->Percent - 1);
-}
-float JobController::getJobSpeed() 
-{ 
-    return (m_Job.operator->() == nullptr) ? -1.0f : m_SpeedTact->Percent; 
+    return (m_Job.operator->() == nullptr) ? -1 : m_SpeedTact->Percent;
 }
 
 void JobController::setTravelHeight(float travelHeight)

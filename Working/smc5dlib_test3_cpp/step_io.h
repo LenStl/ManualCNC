@@ -15,13 +15,13 @@ namespace StepIO
 	/**
 	 * Generates a list of steps for the SMC5D controller to move along a 2D-AABB.
 	 *
-	 * @param min_x - Minimum and starting x coordinate of the square.
-	 * @param min_y - Minimum and starting y coordinate of the square.
-	 * @param max_x - Maximum x coordinate of the square.
-	 * @param max_y - Maximum y coordinate of the square.
+	 * @param minX - Minimum and starting x coordinate of the square.
+	 * @param minY - Minimum and starting y coordinate of the square.
+	 * @param maxX - Maximum x coordinate of the square.
+	 * @param maxY - Maximum y coordinate of the square.
 	 * @param height - Constant traveling height at which the head moves.
 	 * @param speed - Constant speed at which the head moves between steps.
-	 * @param smc_settings - SMCSettings of the targeted connector.
+	 * @param smcSettings - SMCSettings of the targeted connector.
 	 * @return A StepList^ of steps representing a square.
 	 */
 	inline StepList^ generateSquare(float minX, float minY, float maxX, float maxY, float height, float speed, SMCSettings^ smcSettings)
@@ -40,13 +40,13 @@ namespace StepIO
 	/**
 	 * Generates a list of steps for the SMC5D controller to linearly move along a line.
 	 *
-	 * @param start_x - Starting x coordinate of the line.
-	 * @param start_y - Starting y coordinate of the line.
-	 * @param end_x - End x coordinate of the line.
-	 * @param end_y - End y coordinate of the line.
+	 * @param startX - Starting x coordinate of the line.
+	 * @param startY - Starting y coordinate of the line.
+	 * @param endX - End x coordinate of the line.
+	 * @param endY - End y coordinate of the line.
 	 * @param height - Constant traveling height at which the head moves.
 	 * @param speed - Constant speed at which the head moves between steps.
-	 * @param smc_settings - SMCSettings of the targeted connector.
+	 * @param smcSettings - SMCSettings of the targeted connector.
 	 * @return A StepList^ of steps representing a line.
 	 */
 	inline StepList^ generateLine(float startX, float startY, float endX, float endY, float height, float speed, SMCSettings^ smcSettings)
@@ -62,13 +62,13 @@ namespace StepIO
 	/**
 	 * Generates a list of steps for the SMC5D controller to move along a circle.
 	 *
-	 * @param center_x - X coordinate of the center of the circle.
-	 * @param center_y - Y coordinate of the center of the circle.
+	 * @param centerX - X coordinate of the center of the circle.
+	 * @param centerY - Y coordinate of the center of the circle.
 	 * @param radius - Radius of the circle.
 	 * @param height - Constant traveling height at which the head moves.
 	 * @param speed - Constant speed at which the head moves between steps.
 	 * @param divisions - Number of linear segments.
-	 * @param smc_settings - SMCSettings of the targeted connector.
+	 * @param smcSettings - SMCSettings of the targeted connector.
 	 * @return A StepList^ of steps representing a circle.
 	 */
 	inline StepList^ generateCircle(float centerX, float centerY, float radius, float height, float speed, unsigned int divisions, SMCSettings^ smcSettings)
@@ -89,10 +89,10 @@ namespace StepIO
 	/**
 	 * Reads the polygon coordinates from a .grf4 or .grf5 file and converts them to a list of steps.
 	 *
-	 * @param file_path - Path to a .grf4 or .grf5 file with ordered segment coordinates on a curve.
+	 * @param filePath - Path to a .grf4 or .grf5 file with ordered segment coordinates on a curve.
 	 * @param height - Constant traveling height at which the head moves.
 	 * @param speed - Constant speed at which the head moves between steps.
-	 * @param smc_settings - SMCSettings of the targeted connector.
+	 * @param smcSettings - SMCSettings of the targeted connector.
 	 * @return A StepList^ of linearly interpolated steps representing the curve defined in file_path.
 	 */
 	inline StepList^ loadGRF(System::String^ filePath, float height, float speed, SMCSettings^ smcSettings)
@@ -132,8 +132,8 @@ namespace StepIO
 	/**
 	 * Reads the coordinates from a binary .sl (Step List) file and converts them to a list of steps.
 	 *
-	 * @param file_path - Path to a .sl (Step List) file with ordered segment coordinates on a curve.
-	 * @param smc_settings - SMCSettings of the targeted connector.
+	 * @param filePath - Path to a .sl (Step List) file with ordered segment coordinates on a curve.
+	 * @param smcSettings - SMCSettings of the targeted connector.
 	 * @return A StepList^ of linearly interpolated steps representing the curve defined in file_path.
 	 */
 	inline StepList^ loadBinary(System::String^ filePath, SMCSettings^ smcSettings)
@@ -149,8 +149,8 @@ namespace StepIO
 	/**
 	 * Writes the coordinates from a list of steps to file_path in binary.
 	 *
-	 * @param file_path - Path to a .sl (Step List) file to write to.
-	 * @param step_list - The list of steps that should be written.
+	 * @param filePath - Path to a .sl (Step List) file to write to.
+	 * @param stepList - The list of steps that should be written.
 	 * @return 0 for success, 1 for error.
 	 */
 	inline int writeBinary(System::String^ filePath, StepList^ stepList)
